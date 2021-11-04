@@ -61,7 +61,7 @@ services:
 
   kibana:
     depends_on:
-      - elasticsearch
+      - logstash
     image: "docker.elastic.co/kibana/kibana:7.13.2"
     container_name: kibana
     ports:
@@ -73,11 +73,11 @@ services:
     networks:
       - eknetwork
 
-  kafka-consumer-node:
-    container_name: kafka-consumer-node
-    image: aimvector/kafka-consumer-node:1.0.0
+  kafka-producer-node:
+    container_name: kafka-producer-node
+    image: aimvector/kafka-producer-node:1.0.0
     build:
-      context: ./applications/consumer
+      context: ./applications/producer
     networks:
       - kafka
 
