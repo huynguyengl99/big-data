@@ -1,0 +1,6 @@
+http.host: "localhost"
+path.config: /usr/share/logstash/pipeline
+path.logs: /var/log/logstash
+config.reload.automatic: true
+log.level: warn
+xpack.monitoring.enabled: false
