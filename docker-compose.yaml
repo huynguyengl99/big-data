@@ -22,29 +22,10 @@ services:
     networks:
       - kafka
 
-  kafka-consumer-node:
-    container_name: kafka-consumer-node
-    image: aimvector/kafka-consumer-node:1.0.0
-    build:
-      context: ./applications/consumer
-    networks:
-      - kafka
-
-  logstash:
-    depends_on:
-      - elasticsearch
-    image: docker.elastic.co/logstash/logstash:7.15.1
-    ports:
-      - "10000:10000"
-    volumes:
-      - ./logstash/settings/:/usr/share/logstash/config/
-      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
-    container_name: logstash
-    networks:
-      - kafka
-      - eknetwork
-
   elasticsearch:
+    depends_on:
+      - kafka-1
+      - zookeeper-1
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.13.2"
     container_name: elasticsearch
     environment:
@@ -64,6 +45,20 @@ services:
     networks:
       - eknetwork
 
+  logstash:
+    depends_on:
+      - elasticsearch
+    image: docker.elastic.co/logstash/logstash:7.15.1
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./logstash/settings/:/usr/share/logstash/config/
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
+    container_name: logstash
+    networks:
+      - kafka
+      - eknetwork
+
   kibana:
     depends_on:
       - elasticsearch
@@ -77,6 +72,14 @@ services:
       - ELASTICSEARCH_PASSWORD=somethingsecret
     networks:
       - eknetwork
+
+  kafka-consumer-node:
+    container_name: kafka-consumer-node
+    image: aimvector/kafka-consumer-node:1.0.0
+    build:
+      context: ./applications/consumer
+    networks:
+      - kafka
 
 networks:
   kafka:
